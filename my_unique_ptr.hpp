@@ -33,6 +33,12 @@ namespace MySTD
         T *release();
         void reset(T *ptr = nullptr);
     };
+
+    template <typename T, typename Deleter = MyDefaultDeleter<T>, typename... Args>
+    MyUniquePtr<T, Deleter> make_unique(Args &&...args)
+    {
+        return MyUniquePtr<T, Deleter>(new T(std::forward<Args>(args)...));
+    }
 }
 
 template <typename T>
