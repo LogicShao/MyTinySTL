@@ -65,8 +65,6 @@ namespace MySTD
     };
 }
 
-#include "my_vector.hpp"
-
 // ==== Constructors Begin Here ====
 // default constructor
 template <typename value_type>
