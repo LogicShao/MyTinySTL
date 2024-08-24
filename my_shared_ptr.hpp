@@ -11,7 +11,8 @@ namespace MySTD
         std::size_t m_refCount;
 
         // MySharedPtr needs to access private members of RefCount
-        friend class MySharedPtr<T>;
+        template <typename U>
+        friend class MySharedPtr;
 
     public:
         RefCount(T *ptr = nullptr);
@@ -26,7 +27,9 @@ namespace MySTD
     class MySharedPtr
     {
     private:
-        RefCount<T> *m_refCount;
+        RefCount<T> *m_refCnt_ptr;
+        std::size_t id;
+        inline static std::size_t count = 0;
 
     public:
         MySharedPtr(T *ptr = nullptr);
@@ -53,8 +56,7 @@ MySTD::RefCount<T>::RefCount(T *ptr)
 template <typename T>
 MySTD::RefCount<T>::~RefCount()
 {
-    --m_refCount;
-    if (m_refCount == 0 && m_ptr)
+    if (m_ptr != nullptr)
     {
         delete m_ptr;
     }
@@ -62,28 +64,31 @@ MySTD::RefCount<T>::~RefCount()
 
 template <typename T>
 MySTD::MySharedPtr<T>::MySharedPtr(T *ptr)
-    : m_refCount(new RefCount<T>(ptr))
+    : m_refCnt_ptr(new RefCount<T>(ptr)), id(++count)
 {
 }
 
 template <typename T>
 MySTD::MySharedPtr<T>::MySharedPtr(const MySharedPtr &other)
-    : m_refCount(other.m_refCount)
+    : m_refCnt_ptr(other.m_refCnt_ptr), id(++count)
 {
-    ++m_refCount->m_refCount;
+    ++m_refCnt_ptr->m_refCount;
 }
 
 template <typename T>
 MySTD::MySharedPtr<T>::MySharedPtr(MySharedPtr &&other)
-    : m_refCount(other.m_refCount)
+    : m_refCnt_ptr(other.m_refCnt_ptr), id(++count)
 {
-    other.m_refCount = nullptr;
+    other.m_refCnt_ptr = nullptr;
 }
 
 template <typename T>
 MySTD::MySharedPtr<T>::~MySharedPtr()
 {
-    
+    if (m_refCnt_ptr != nullptr && --m_refCnt_ptr->m_refCount == 0)
+    {
+        delete m_refCnt_ptr;
+    }
 }
 
 template <typename T>
@@ -91,13 +96,13 @@ MySTD::MySharedPtr<T> &MySTD::MySharedPtr<T>::operator=(const MySharedPtr &other
 {
     if (this != &other)
     {
-        if (m_refCount)
+        if (m_refCnt_ptr != nullptr && --m_refCnt_ptr->m_refCount == 0)
         {
-            delete m_refCount;
+            delete m_refCnt_ptr;
         }
 
-        m_refCount = other.m_refCount;
-        ++m_refCount->m_refCount;
+        m_refCnt_ptr = other.m_refCnt_ptr;
+        ++m_refCnt_ptr->m_refCount;
     }
 
     return *this;
@@ -108,13 +113,13 @@ MySTD::MySharedPtr<T> &MySTD::MySharedPtr<T>::operator=(MySharedPtr &&other)
 {
     if (this != &other)
     {
-        if (m_refCount)
+        if (m_refCnt_ptr != nullptr && --m_refCnt_ptr->m_refCount == 0)
         {
-            delete m_refCount;
+            delete m_refCnt_ptr;
         }
 
-        m_refCount = other.m_refCount;
-        other.m_refCount = nullptr;
+        m_refCnt_ptr = other.m_refCnt_ptr;
+        other.m_refCnt_ptr = nullptr;
     }
 
     return *this;
@@ -123,19 +128,19 @@ MySTD::MySharedPtr<T> &MySTD::MySharedPtr<T>::operator=(MySharedPtr &&other)
 template <typename T>
 T &MySTD::MySharedPtr<T>::operator*() const
 {
-    return *m_refCount->m_ptr;
+    return *m_refCnt_ptr->m_ptr;
 }
 
 template <typename T>
 T *MySTD::MySharedPtr<T>::operator->() const
 {
-    return m_refCount->m_ptr;
+    return m_refCnt_ptr->m_ptr;
 }
 
 template <typename T>
 T *MySTD::MySharedPtr<T>::get() const
 {
-    return m_refCount->m_ptr;
+    return m_refCnt_ptr->m_ptr;
 }
 
 #endif // MY_SHARED_PTR_HPP
