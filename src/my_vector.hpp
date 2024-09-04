@@ -283,6 +283,7 @@ void MySTD::MyVector<value_type>::clear()
     {
         data_[i].~value_type();
     }
+
     delete[] data_;
     data_ = nullptr;
     size_ = 0;

@@ -1,7 +1,7 @@
 #include <iostream>
 #include "my_vector.hpp"
 
-int main()
+void test_vector()
 {
     MySTD::MyVector<int> vec;
 
@@ -48,6 +48,4 @@ int main()
     {
         std::cout << vec3[i] << std::endl;
     }
-
-    return 0;
 }

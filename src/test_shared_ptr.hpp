@@ -1,30 +1,30 @@
 #include <iostream>
 #include "my_shared_ptr.hpp"
 
-struct TestClass
+struct SharedPtrTest
 {
-    TestClass()
+    SharedPtrTest()
     {
         std::cout << "TestClass constructor" << std::endl;
     }
 
-    TestClass(const TestClass &other)
+    SharedPtrTest(const SharedPtrTest &other)
     {
         std::cout << "TestClass copy constructor" << std::endl;
     }
 
-    TestClass(TestClass &&other)
+    SharedPtrTest(SharedPtrTest &&other)
     {
         std::cout << "TestClass move constructor" << std::endl;
     }
 
-    ~TestClass()
+    ~SharedPtrTest()
     {
         std::cout << "TestClass destructor" << std::endl;
     }
 };
 
-void test1()
+void test_shared_ptr_1()
 {
     MySTD::MySharedPtr ptr(new int(5));
     std::cout << "Value: " << *ptr << std::endl;
@@ -49,9 +49,9 @@ void test1()
     std::cout << "Pointer: " << ptr5.get() << std::endl;
 }
 
-void test2()
+void test_shared_ptr_2()
 {
-    MySTD::MySharedPtr ptr(new TestClass);
+    MySTD::MySharedPtr ptr(new SharedPtrTest);
     std::cout << "ptr(new TestClass)" << std::endl;
 
     MySTD::MySharedPtr ptr2(ptr);
@@ -60,21 +60,15 @@ void test2()
     MySTD::MySharedPtr ptr3(std::move(ptr2));
     std::cout << "ptr3(std::move(ptr2))" << std::endl;
 
-    MySTD::MySharedPtr ptr4(new TestClass);
+    MySTD::MySharedPtr ptr4(new SharedPtrTest);
     std::cout << "ptr4(new TestClass)" << std::endl;
 
     ptr4 = ptr3;
     std::cout << "ptr4 = ptr3" << std::endl;
 
-    MySTD::MySharedPtr ptr5(new TestClass);
+    MySTD::MySharedPtr ptr5(new SharedPtrTest);
     std::cout << "ptr5(new TestClass)" << std::endl;
 
     ptr5 = std::move(ptr4);
     std::cout << "ptr5 = std::move(ptr4)" << std::endl;
-}
-
-int main()
-{
-    test2();
-    return 0;
 }

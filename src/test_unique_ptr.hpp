@@ -1,20 +1,20 @@
 #include <iostream>
 #include "my_unique_ptr.hpp"
 
-struct TestClass
+struct TestUniquePtr
 {
-    TestClass()
+    TestUniquePtr()
     {
         std::cout << "TestClass constructor" << std::endl;
     }
 
-    ~TestClass()
+    ~TestUniquePtr()
     {
         std::cout << "TestClass destructor" << std::endl;
     }
 };
 
-int main()
+void test_unique_ptr()
 {
     MySTD::MyUniquePtr ptr(new int(5));
     std::cout << "Value: " << *ptr << std::endl;
@@ -32,8 +32,6 @@ int main()
     std::cout << "Value: " << *ptr3 << std::endl;
     std::cout << "Pointer: " << ptr3.get() << std::endl;
 
-    MySTD::MyUniquePtr ptr4(new TestClass);
+    MySTD::MyUniquePtr ptr4(new TestUniquePtr);
     MySTD::MyUniquePtr ptr5(ptr4.release());
-
-    return 0;
 }

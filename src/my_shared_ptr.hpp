@@ -28,7 +28,6 @@ namespace MySTD
     {
     private:
         RefCount<T> *m_refCnt_ptr;
-        std::size_t id;
 
     public:
         MySharedPtr(T *ptr = nullptr);
@@ -41,15 +40,13 @@ namespace MySTD
 
         T &operator*() const;
         T *operator->() const;
-
         T *get() const;
+
+        std::size_t use_count() const;
     };
 
     template <typename T, typename... Args>
-    MySharedPtr<T> make_shared(Args &&...args)
-    {
-        return MySharedPtr<T>(new T(std::forward<Args>(args)...));
-    }
+    MySharedPtr<T> make_shared(Args &&...args);
 }
 
 template <typename T>
@@ -146,6 +143,18 @@ template <typename T>
 T *MySTD::MySharedPtr<T>::get() const
 {
     return m_refCnt_ptr->m_ptr;
+}
+
+template <typename T>
+std::size_t MySTD::MySharedPtr<T>::use_count() const
+{
+    return m_refCnt_ptr->m_refCount;
+}
+
+template <typename T, typename... Args>
+MySTD::MySharedPtr<T> MySTD::make_shared(Args &&...args)
+{
+    return MySharedPtr<T>(new T(std::forward<Args>(args)...));
 }
 
 #endif // MY_SHARED_PTR_HPP
