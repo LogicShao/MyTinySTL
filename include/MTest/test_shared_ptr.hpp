@@ -1,3 +1,5 @@
+#pragma once
+
 #include <iostream>
 #include "../my_shared_ptr.hpp"
 

@@ -1,3 +1,5 @@
+#pragma once
+
 #include <iostream>
 #include "../my_unique_ptr.hpp"
 

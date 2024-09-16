@@ -78,6 +78,12 @@ template <typename value_type>
 MySTD::MyVector<value_type>::MyVector(std::size_t size)
     : size_(size), capacity_(size)
 {
+    if (size == 0)
+    {
+        data_ = nullptr;
+        return;
+    }
+
     try
     {
         data_ = new value_type[size];

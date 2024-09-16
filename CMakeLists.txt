@@ -8,3 +8,5 @@ add_library(MySTL STATIC ${srcs})
 target_include_directories(MySTL PUBLIC include)
 
 add_executable(main src/main.cpp)
+target_include_directories(main PUBLIC include)
+target_link_libraries(main MySTL)
