@@ -20,7 +20,7 @@ struct SharedPtrTest {
   ~SharedPtrTest() { std::cout << "TestClass destructor" << std::endl; }
 };
 
-void test_shared_ptr_1() {
+void test_SharedPtr_1() {
   Tiny::SharedPtr ptr(new int(5));
   std::cout << "Value: " << *ptr << std::endl;
   std::cout << "Pointer: " << ptr.get() << std::endl;
@@ -44,7 +44,7 @@ void test_shared_ptr_1() {
   std::cout << "Pointer: " << ptr5.get() << std::endl;
 }
 
-void test_shared_ptr_2() {
+void test_SharedPtr_2() {
   Tiny::SharedPtr ptr(new SharedPtrTest);
   std::cout << "ptr(new TestClass)" << std::endl;
 

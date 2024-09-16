@@ -4,11 +4,11 @@
 #include "MTest/test_Vector.hpp"
 
 int main() {
-  Tiny::TEST::test_array();
-  Tiny::TEST::test_vector();
-  Tiny::TEST::test_shared_ptr_1();
-  Tiny::TEST::test_shared_ptr_2();
-  Tiny::TEST::test_unique_ptr();
+  Tiny::TEST::test_Array();
+  Tiny::TEST::test_Vector();
+  Tiny::TEST::test_SharedPtr_1();
+  Tiny::TEST::test_SharedPtr_2();
+  Tiny::TEST::test_UniquePtr();
 
   return 0;
 }

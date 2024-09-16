@@ -14,7 +14,7 @@ void print_array(const Tiny::Array<T, N> &arr) {
   std::cout << std::endl;
 }
 
-void test_array() {
+void test_Array() {
   Tiny::Array<int, 5> arr;
 
   for (int i = 0; i < arr.size(); i++) {

@@ -6,7 +6,7 @@
 
 namespace Tiny {
 namespace TEST {
-void test_vector() {
+void test_Vector() {
   Tiny::Vector<int> vec;
 
   std::cout << "Size: " << vec.size() << std::endl;
