@@ -2,8 +2,10 @@
 #include "MTest/test_SharedPtr.hpp"
 #include "MTest/test_UniquePtr.hpp"
 #include "MTest/test_Vector.hpp"
+#include "MTest/test_Thread.hpp"
 
 int main() {
+  Tiny::TEST::test_Thread();
   Tiny::TEST::test_Array();
   Tiny::TEST::test_Vector();
   Tiny::TEST::test_SharedPtr_1();
