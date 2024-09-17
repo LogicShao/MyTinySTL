@@ -3,9 +3,9 @@
 
 #include <cstddef>
 #include <exception>
+#include <functional>
 #include <memory>
 #include <pthread.h>
-#include <functional>
 #include <system_error>
 #include <tuple>
 #include <utility>
@@ -23,8 +23,10 @@ public:
     using Tuple_t = std::tuple<std::decay_t<Function>, std::decay_t<Args>...>;
     auto decay_copy = std::make_unique<Tuple_t>(std::forward<Function>(f),
                                                 std::forward<Args>(args)...);
-    auto invoke_proc = start<Tuple_t>(std::make_index_sequence<1 + sizeof...(Args)>());
-    if (int error = pthread_create(&tid, nullptr, invoke_proc, decay_copy.get());
+    auto invoke_proc =
+        start<Tuple_t>(std::make_index_sequence<1 + sizeof...(Args)>());
+    if (int error =
+            pthread_create(&tid, nullptr, invoke_proc, decay_copy.get());
         error != 0) {
       throw std::system_error(error, std::generic_category());
     }

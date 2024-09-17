@@ -1,8 +1,8 @@
 #include "MTest/test_Array.hpp"
 #include "MTest/test_SharedPtr.hpp"
+#include "MTest/test_Thread.hpp"
 #include "MTest/test_UniquePtr.hpp"
 #include "MTest/test_Vector.hpp"
-#include "MTest/test_Thread.hpp"
 
 int main() {
   Tiny::TEST::test_Thread();
