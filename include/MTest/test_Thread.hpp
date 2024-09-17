@@ -5,7 +5,7 @@
 #include <iostream>
 
 namespace Tiny {
-namespace TEST {
+namespace TestThread {
 namespace ThreadTest {
 void foo() { std::cout << "foo" << std::endl; }
 
@@ -25,7 +25,7 @@ void test_Thread() {
   Tiny::Thread t2(ThreadTest::add, 1, 2);
   t2.join();
 }
-} // namespace TEST
+} // namespace TestThread
 } // namespace Tiny
 
 #endif // TEST_THREAD_HPP

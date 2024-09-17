@@ -5,12 +5,12 @@
 #include "MTest/test_Vector.hpp"
 
 int main() {
-  Tiny::TEST::test_Thread();
-  Tiny::TEST::test_Array();
-  Tiny::TEST::test_Vector();
-  Tiny::TEST::test_SharedPtr_1();
-  Tiny::TEST::test_SharedPtr_2();
-  Tiny::TEST::test_UniquePtr();
+  Tiny::TestThread::test_Thread();
+  Tiny::TestArray::test_Array();
+  Tiny::TestVector::test_Vector();
+  Tiny::TestSharedPtr::test_SharedPtr_1();
+  Tiny::TestSharedPtr::test_SharedPtr_2();
+  Tiny::TestUniquePtr::test_UniquePtr();
 
   return 0;
 }

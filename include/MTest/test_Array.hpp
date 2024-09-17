@@ -5,7 +5,7 @@
 #include <iostream>
 
 namespace Tiny {
-namespace TEST {
+namespace TestArray {
 template <typename T, std::size_t N>
 void print_array(const Tiny::Array<T, N> &arr) {
   for (int i = 0; i < arr.size(); i++) {
@@ -32,7 +32,7 @@ void test_Array() {
   arr4 = arr3;
   print_array(arr4);
 }
-} // namespace TEST
+} // namespace TestArray
 } // namespace Tiny
 
 #endif // TEST_TINY_ARRAY_HPP

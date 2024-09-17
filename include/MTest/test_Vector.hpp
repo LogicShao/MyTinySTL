@@ -5,7 +5,7 @@
 #include <iostream>
 
 namespace Tiny {
-namespace TEST {
+namespace TestVector {
 void test_Vector() {
   Tiny::Vector<int> vec;
 
@@ -49,7 +49,7 @@ void test_Vector() {
     std::cout << vec3[i] << std::endl;
   }
 }
-} // namespace TEST
+} // namespace TestVector
 } // namespace Tiny
 
 #endif // TEST_TINY_VECTOR_HPP

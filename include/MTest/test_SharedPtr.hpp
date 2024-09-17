@@ -5,7 +5,7 @@
 #include <iostream>
 
 namespace Tiny {
-namespace TEST {
+namespace TestSharedPtr {
 struct SharedPtrTest {
   SharedPtrTest() { std::cout << "TestClass constructor" << std::endl; }
 
@@ -66,7 +66,7 @@ void test_SharedPtr_2() {
   ptr5 = std::move(ptr4);
   std::cout << "ptr5 = std::move(ptr4)" << std::endl;
 }
-} // namespace TEST
+} // namespace TestSharedPtr
 } // namespace Tiny
 
 #endif // TEST_TINY_SHARED_PTR_HPP

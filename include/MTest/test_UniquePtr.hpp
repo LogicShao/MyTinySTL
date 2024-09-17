@@ -5,7 +5,7 @@
 #include <iostream>
 
 namespace Tiny {
-namespace TEST {
+namespace TestUniquePtr {
 struct TestUniquePtr {
   TestUniquePtr() { std::cout << "TestClass constructor" << std::endl; }
 
@@ -32,7 +32,7 @@ void test_UniquePtr() {
   Tiny::UniquePtr ptr4(new TestUniquePtr);
   Tiny::UniquePtr ptr5(ptr4.release());
 }
-} // namespace TEST
+} // namespace TestUniquePtr
 } // namespace Tiny
 
 #endif // TEST_TINY_UNIQUE_PTR_HPP
