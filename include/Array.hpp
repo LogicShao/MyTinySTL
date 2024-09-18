@@ -5,8 +5,9 @@
 #include <stdexcept>
 
 namespace Tiny {
-template <typename T, std::size_t N>
-requires(N > 0) class Array {
+template <typename T, std::size_t N> class Array {
+  static_assert(N > 0, "Array size must be greater than 0.");
+
 private:
   T m_data[N];
 
@@ -77,7 +78,7 @@ template <typename T, std::size_t N> T Tiny::Array<T, N>::back() const {
 template <typename T, std::size_t N>
 T &Tiny::Array<T, N>::at(std::size_t index) {
   if (index >= N) {
-    throw std::out_of_range("MyArray::at");
+    throw std::out_of_range("Array::at");
   }
 
   return m_data[index];
@@ -86,7 +87,7 @@ T &Tiny::Array<T, N>::at(std::size_t index) {
 template <typename T, std::size_t N>
 const T &Tiny::Array<T, N>::at(std::size_t index) const {
   if (index >= N) {
-    throw std::out_of_range("MyArray::at");
+    throw std::out_of_range("Array::at");
   }
 
   return m_data[index];

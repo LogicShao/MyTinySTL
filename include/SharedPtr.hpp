@@ -2,6 +2,7 @@
 #define TINY_SHARED_PTR_HPP
 
 #include <cstddef>
+#include <utility>
 
 namespace Tiny {
 template <typename T> class RefCount {
@@ -38,10 +39,11 @@ public:
   T *get() const;
 
   std::size_t use_count() const;
+
+  explicit operator bool() const { return m_refCnt_ptr != nullptr; }
 };
 
-template <typename T, typename... Args>
-SharedPtr<T> make_shared(Args &&...args);
+template <typename T, typename... Args> SharedPtr<T> makeShared(Args &&...args);
 } // namespace Tiny
 
 template <typename T>
@@ -119,7 +121,7 @@ template <typename T> std::size_t Tiny::SharedPtr<T>::use_count() const {
 }
 
 template <typename T, typename... Args>
-Tiny::SharedPtr<T> Tiny::make_shared(Args &&...args) {
+Tiny::SharedPtr<T> Tiny::makeShared(Args &&...args) {
   return SharedPtr<T>(new T(std::forward<Args>(args)...));
 }
 

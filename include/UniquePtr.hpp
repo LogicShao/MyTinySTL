@@ -1,6 +1,8 @@
 #ifndef TINY_UNIQUE_PTR_HPP
 #define TINY_UNIQUE_PTR_HPP
 
+#include <utility>
+
 namespace Tiny {
 template <typename T> class DefaultDeleter {
 public:
@@ -27,10 +29,12 @@ public:
   T *get() const;
   T *release();
   void reset(T *ptr = nullptr);
+
+  explicit operator bool() const { return m_ptr != nullptr; }
 };
 
 template <typename T, typename Deleter = DefaultDeleter<T>, typename... Args>
-UniquePtr<T, Deleter> make_unique(Args &&...args) {
+UniquePtr<T, Deleter> makeUnique(Args &&...args) {
   return UniquePtr<T, Deleter>(new T(std::forward<Args>(args)...));
 }
 } // namespace Tiny
