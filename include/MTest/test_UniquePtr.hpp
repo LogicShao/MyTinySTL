@@ -12,7 +12,7 @@ struct TestUniquePtr {
   ~TestUniquePtr() { std::cout << "TestClass destructor" << std::endl; }
 };
 
-void test_UniquePtr() {
+inline void test_UniquePtr() {
   Tiny::UniquePtr ptr(new int(5));
   std::cout << "Value: " << *ptr << std::endl;
   std::cout << "Pointer: " << ptr.get() << std::endl;

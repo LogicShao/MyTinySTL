@@ -111,6 +111,7 @@ public:
 
   List &operator=(const List &other) {
     if (this != &other) {
+      clear();
       if (other.m_head) {
         m_head = new ListNode<T>(other.m_head->data);
         ListNode<T> *curr = m_head;
@@ -129,6 +130,8 @@ public:
 
   List &operator=(List &&other) {
     if (this != &other) {
+      clear();
+
       m_head = other.m_head;
       m_tail = other.m_tail;
       m_size = other.m_size;
@@ -165,6 +168,41 @@ public:
     ++m_size;
   }
 
+  void push_front(const List<T> &other) {
+    if (other.m_head == nullptr) {
+      return;
+    }
+    ListNode<T> *curr = other.m_tail;
+    while (curr) {
+      push_front(curr->data);
+      curr = curr->prev;
+    }
+  }
+
+  void push_front(List<T> &&other) { // O(1) 移动
+    if (other.m_head == nullptr) {
+      return;
+    }
+    other.m_tail->next = m_head;
+    m_head->prev = other.m_tail;
+    m_head = other.m_head;
+    m_size += other.m_size;
+    other.m_head = nullptr;
+    other.m_tail = nullptr;
+    other.m_size = 0;
+  }
+
+  void push_back(const List<T> &other) {
+    if (other.m_head == nullptr) {
+      return;
+    }
+    ListNode<T> *curr = other.m_head;
+    while (curr) {
+      push_back(curr->data);
+      curr = curr->next;
+    }
+  }
+
   void push_back(T &&val) {
     if (m_head) {
       m_tail->next = new ListNode<T>(std::forward(val));
@@ -176,6 +214,25 @@ public:
       m_tail = m_head;
       ++m_size;
     }
+  }
+
+  void push_back(List<T> &&other) { // O(1) 移动
+    if (other.m_head == nullptr) {
+      return;
+    }
+    if (m_head) {
+      m_tail->next = other.m_head;
+      other.m_head->prev = m_tail;
+      m_tail = other.m_tail;
+      m_size += other.m_size;
+    } else {
+      m_head = other.m_head;
+      m_tail = other.m_tail;
+      m_size = other.m_size;
+    }
+    other.m_head = nullptr;
+    other.m_tail = nullptr;
+    other.m_size = 0;
   }
 
   void pop_front() {
@@ -385,6 +442,316 @@ private:
   std::size_t m_size;
 };
 
+template <typename T, typename... Lists>
+List<T> ziplist(const List<T> &list, const Lists &...lists) {
+  List<T> result = list;
+  list.push_back(ziplist(lists...));
+  return result;
+}
+
+template <typename T> List<T> ziplist(const List<T> &list) { return list; }
+
+template <typename T> class forwardListNode {
+public:
+  forwardListNode() : next(nullptr) {}
+  forwardListNode(const T &data) : data(data), next(nullptr) {}
+  forwardListNode(T &&data) : data(std::move(data)), next(nullptr) {}
+
+  T data;
+  forwardListNode *next;
+
+  forwardListNode &operator=(const forwardListNode &other) {
+    if (this != &other) {
+      data = other.data;
+      next = other.next;
+    }
+    return *this;
+  }
+
+  forwardListNode &operator=(forwardListNode &&other) {
+    if (this != &other) {
+      data = std::move(other.data);
+      next = other.next;
+
+      other.next = nullptr;
+    }
+    return *this;
+  }
+
+  forwardListNode &operator=(T &&val) {
+    data = std::forward(val);
+    return *this;
+  }
+
+  explicit operator T() const { return data; }
+
+  template <typename U>
+  friend bool operator==(const forwardListNode<U> &lhs,
+                         const forwardListNode<U> &rhs) {
+    return lhs.data == rhs.data && lhs.next == rhs.next;
+  }
+
+  template <typename U>
+  friend bool operator!=(const forwardListNode<U> &lhs,
+                         const forwardListNode<U> &rhs) {
+    return not(lhs == rhs);
+  }
+
+  template <typename U> friend class forwardList;
+
+  template <typename charT, typename Traits, typename U>
+  friend std::basic_ostream<charT, Traits> &
+  operator<<(std::basic_ostream<charT, Traits> &os,
+             const forwardListNode<U> &node) {
+    os << node.data;
+  }
+};
+
+template <typename T> class forwardList {
+public:
+  forwardList() : m_head(nullptr), m_size(0) {}
+
+  forwardList(const forwardList &other) {
+    if (other.m_head) {
+      m_head = new forwardListNode<T>(other.m_head->data);
+      forwardListNode<T> *curr = m_head;
+      forwardListNode<T> *otherCurr = other.m_head;
+      while (otherCurr->next) {
+        curr->next = new forwardListNode<T>(otherCurr->next->data);
+        curr = curr->next;
+        otherCurr = otherCurr->next;
+      }
+    }
+  }
+
+  forwardList(forwardList &&other) {
+    m_head = other.m_head;
+    m_size = other.m_size;
+
+    other.m_head = nullptr;
+    other.m_size = 0;
+  }
+
+  forwardList &operator=(const forwardList &other) {
+    if (this != &other) {
+      clear();
+      if (other.m_head) {
+        m_head = new forwardListNode<T>(other.m_head->data);
+        forwardListNode<T> *curr = m_head;
+        forwardListNode<T> *otherCurr = other.m_head;
+        while (otherCurr->next) {
+          curr->next = new forwardListNode<T>(otherCurr->next->data);
+          curr = curr->next;
+          otherCurr = otherCurr->next;
+        }
+      }
+    }
+    return *this;
+  }
+
+  forwardList &operator=(forwardList &&other) {
+    if (this != &other) {
+      clear();
+
+      m_head = other.m_head;
+      m_size = other.m_size;
+
+      other.m_head = nullptr;
+      other.m_size = 0;
+    }
+    return *this;
+  }
+
+  ~forwardList() { clear(); }
+
+  T front() const {
+    if (m_head) {
+      return m_head->data;
+    } else {
+      throw std::out_of_range("List is empty");
+    }
+  }
+
+  T &front() {
+    if (m_head) {
+      return m_head->data;
+    } else {
+      throw std::out_of_range("List is empty");
+    }
+  }
+
+  T back() const {
+    if (m_head) {
+      forwardListNode<T> *curr = m_head;
+      while (curr->next) {
+        curr = curr->next;
+      }
+      return curr->data;
+    } else {
+      throw std::out_of_range("List is empty");
+    }
+  }
+
+  T &back() {
+    if (m_head) {
+      forwardListNode<T> *curr = m_head;
+      while (curr->next) {
+        curr = curr->next;
+      }
+      return curr->data;
+    } else {
+      throw std::out_of_range("List is empty");
+    }
+  }
+
+  void push_front(T &&val) {
+    forwardListNode<T> *newNode = new forwardListNode<T>(std::forward(val));
+    newNode->next = m_head;
+    m_head = newNode;
+    ++m_size;
+  }
+
+  void push_back(T &&val) {
+    if (m_head) {
+      forwardListNode<T> *curr = m_head;
+      while (curr->next) {
+        curr = curr->next;
+      }
+      curr->next = new forwardListNode<T>(std::forward(val));
+      ++m_size;
+    } else {
+      m_head = new forwardListNode<T>(std::forward(val));
+      ++m_size;
+    }
+  }
+
+  void pop_front() {
+    if (m_head) {
+      forwardListNode<T> *next = m_head->next;
+      delete m_head;
+      m_head = next;
+      --m_size;
+    } else {
+      throw std::out_of_range("List is empty");
+    }
+  }
+
+  void pop_back() {
+    if (m_head) {
+      if (m_head->next) {
+        forwardListNode<T> *curr = m_head;
+        while (curr->next->next) {
+          curr = curr->next;
+        }
+        delete curr->next;
+        curr->next = nullptr;
+        --m_size;
+      } else {
+        delete m_head;
+        m_head = nullptr;
+        --m_size;
+      }
+    } else {
+      throw std::out_of_range("List is empty");
+    }
+  }
+
+  bool empty() const { return m_size == 0; }
+
+  void insert(T &&val, std::size_t index) {
+    /**
+      * @brief 在index位置之前插入元素
+      * @param val 要插入的元素
+      * @param index 插入位置
+      * @throw std::out_of_range 如果index超出范围
+
+      * @note 时间复杂度O(N)
+      * @note 索引从0开始
+      * @note 如果index等于链表长度，则插入到链表尾部
+     */
+    if (index > m_size) {
+      throw std::out_of_range("Index out of range");
+    }
+    if (index == 0) {
+      push_front(std::forward(val));
+    } else if (index == m_size) {
+      push_back(std::forward(val));
+    } else {
+      forwardListNode<T> *curr = m_head;
+      for (std::size_t i = 0; i < index - 1; ++i) {
+        curr = curr->next;
+      }
+      forwardListNode<T> *newNode = new forwardListNode<T>(std::forward(val));
+      newNode->next = curr->next;
+      curr->next = newNode;
+      ++m_size;
+    }
+  }
+
+  void remove(std::size_t index) {
+    /**
+      * @brief 删除index位置的元素
+      * @param index 要删除的元素的位置
+      * @throw std::out_of_range 如果index超出范围
+
+      * @note 时间复杂度O(N)
+      * @note 索引从0开始
+     */
+    if (index >= m_size) {
+      throw std::out_of_range("Index out of range");
+    }
+    if (index == 0) {
+      pop_front();
+    } else {
+      forwardListNode<T> *curr = m_head;
+      for (std::size_t i = 0; i < index - 1; ++i) {
+        curr = curr->next;
+      }
+      forwardListNode<T> *next = curr->next->next;
+      delete curr->next;
+      curr->next = next;
+      --m_size;
+    }
+  }
+
+  T &operator[](std::size_t index) {
+    if (index >= m_size) {
+      throw std::out_of_range("Index out of range");
+    }
+    forwardListNode<T> *curr = m_head;
+    for (std::size_t i = 0; i < index; ++i) {
+      curr = curr->next;
+    }
+    return curr->data;
+  }
+
+  const T &operator[](std::size_t index) const {
+    if (index >= m_size) {
+      throw std::out_of_range("Index out of range");
+    }
+    forwardListNode<T> *curr = m_head;
+    for (std::size_t i = 0; i < index; ++i) {
+      curr = curr->next;
+    }
+    return curr->data;
+  }
+
+  void clear() {
+    forwardListNode<T> *curr = m_head;
+    while (curr) {
+      forwardListNode<T> *next = curr->next;
+      delete curr;
+      curr = next;
+    }
+    m_head = nullptr;
+    m_size = 0;
+  }
+
+private:
+  forwardListNode<T> *m_head;
+  std::size_t m_size;
+};
+
 template <typename T, std::size_t N> class tpForwardList {
   static_assert(N >= 0, "List size must be non-negative");
 
@@ -446,7 +813,7 @@ public:
 
   T back() const { return list[N - 1]; } // O(N) 访问
 
-  T &back() { return list[N - 1]; }      // O(N) 访问
+  T &back() { return list[N - 1]; } // O(N) 访问
 
   tpForwardList<T, N + 1> insertToTail(const T &&val) const {
     return tpForwardList<T, N + 1>(std::forward<T>(data),

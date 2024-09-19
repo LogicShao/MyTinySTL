@@ -7,12 +7,12 @@
 namespace Tiny {
 namespace TestThread {
 namespace ThreadTest {
-void foo() { std::cout << "foo" << std::endl; }
+inline void foo() { std::cout << "foo" << std::endl; }
 
-void add(int a, int b) { std::cout << "a + b = " << a + b << std::endl; }
+inline void add(int a, int b) { std::cout << "a + b = " << a + b << std::endl; }
 } // namespace ThreadTest
 
-void test_Thread() {
+inline void test_Thread() {
   std::cout << "Thread test" << std::endl;
 
   std::cout << "This Thread:" << Tiny::This_Thread::get_id() << std::endl;
